@@ -4,5 +4,6 @@ Creating a daftpunk/tron Dog style cosplay helmet
 Helmet will be 3D modeled, printed and packed with LED Matrices
 
 
+Project also includes test sketches for Arduino Uni 8x8 (32x8) matrixes MAX7219 - Leds/Test Sketches/
 
 ~ Inspired by http://www.kaiborgstudios.com/cyber-anubis ~
