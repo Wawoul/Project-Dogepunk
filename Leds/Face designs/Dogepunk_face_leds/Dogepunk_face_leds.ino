@@ -38,6 +38,13 @@ LedControl lc = LedControl(12, 11, 10, max_units);
 //GND connects to pin GND
 //VCC connects to pin 5V Power
 
+//Power on:
+byte pp[32] = {B11110011, B11111011, B11011011, B11011011, B11011011, B11011011, B11111011, B11110011,
+               B11101111, B11101111, B01101100, B01101100, B01101101, B01101101, B11101111, B11101111,
+               B10111110, B10111110, B00110000, B00111110, B10111110, B10110000, B10111110, B10111110,
+               B00000000, B00000000, B00000000, B01110111, B01010100, B01010111, B01010001, B11110111
+              };
+
 // Default face:
 byte dd[32] = {B00000011, B00001111, B00111100, B11110000, B11000000, B11000000, B11111111, B00111111,
                B10000000, B11100000, B01111000, B00011100, B00000111, B00000011, B11111111, B11111111,
@@ -104,6 +111,22 @@ void setup() {
   pinMode(dButtonPin, INPUT);
   pinMode(aButtonPin, INPUT);
   pinMode(sButtonPin, INPUT);
+}
+
+void powerAnimation() {
+  for (int i = 0; i <= 7; i++) {
+    lc.setRow(0, i, pp[i]);
+  }
+  for (int i = 0; i <= 7; i++) {
+    lc.setRow(1, i, pp[(i + 8)]);
+  }
+  for (int i = 0; i <= 7; i++) {
+    lc.setRow(2, i, pp[(i + 16)]);
+  }
+  for (int i = 0; i <= 7; i++) {
+    lc.setRow(3, i, pp[(i + 24)]);
+  }
+  delay(5000);
 }
 
 void defaultAnimation() {
@@ -238,6 +261,7 @@ void loop() {
 
   // If Power button is HIGH:
   if (pwButtonState == HIGH && pwFlag == 0) {
+    powerAnimation();
     emoteFlag = 0;
     pwFlag = 1;
     delay(250);
