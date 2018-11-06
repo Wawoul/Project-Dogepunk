@@ -7,7 +7,7 @@
   Ardunio will animate a default face and switch emotions when buttons are pressed
   Displaying on 32x8 MAX7219 Matrix Module 4-in-1 Display.
 
-  WORK IN PROGRESS - REV 4 24/10/2018
+  WORK IN PROGRESS - REV 5 06/11/2018
   ---------------------------------------------------------------------------
 */
 
@@ -302,10 +302,12 @@ void loop() {
     powerAnimation();
     emoteFlag = 0;
     pwFlag = 1;
+    pwButtonState == LOW;
     delay(250);
   } else if (pwButtonState == HIGH && pwFlag == 1) {
     clearAll();
     pwFlag = 0;
+    pwButtonState == LOW;
     delay(250);
   }
 
