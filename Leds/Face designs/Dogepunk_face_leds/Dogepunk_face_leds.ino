@@ -1,13 +1,13 @@
 /*
   Created by Ewen Paterson
   https://anu.biz/
-  17/10/2018
+  19/10/2018
 
   ---------------------------------------------------------------------------
   Ardunio will animate a default face and switch emotions when buttons are pressed
   Displaying on 3x 32x8 MAX7219 Matrix Module 4-in-1 Display.
 
-  WORK IN PROGRESS - REV 8 15/11/2018
+  WORK IN PROGRESS - REV 9 15/11/2018
   ---------------------------------------------------------------------------
 */
 
@@ -29,14 +29,14 @@ int aButtonState;
 int pwFlag = 0; //flag when power button is activated
 int emoteFlag = 0; //flag when emotion button is activated
 
-LedControl lc = LedControl(12, 11, 10, 4); //right side of face
-LedControl lc1 = LedControl(8, 9, 3, 4); //left side of face
+LedControl lc = LedControl(12, 11, 10, 6); //right side of face
+LedControl lc1 = LedControl(8, 9, 3, 6); //left side of face
 //DOUT connects to pin 12
 //CLK connects to pin 11
 //CS connects to pin 10
 //GND connects to pin GND
 //VCC connects to pin 5V Power
-//4 is the number of chained matrices. 6 on each side of face
+//6 is the number of chained matrices. 6 on each side of face
 
 //Power on:
 byte pp[32] = {B11110011, B11111011, B11011011, B11011011, B11011011, B11011011, B11111011, B11110011,
@@ -46,10 +46,12 @@ byte pp[32] = {B11110011, B11111011, B11011011, B11011011, B11011011, B11011011,
               };
 
 // Default face R:
-byte dd[32] = {B00000011, B00001111, B00111100, B11110000, B11000000, B11000000, B11111111, B00111111,
+byte dd[48] = {B00000011, B00001111, B00111100, B11110000, B11000000, B11000000, B11111111, B00111111,
                B10000000, B11100000, B01111000, B00011100, B00000111, B00000011, B11111111, B11111111,
                B00000000, B00000000, B00000000, B00000000, B00000000, B11110000, B11111111, B11111111,
-               B00000000, B00000000, B00000000, B00000000, B00000000, B00000000, B11111110, B11110000
+               B00000000, B00000000, B00000000, B00000000, B00000000, B00000000, B11111110, B11110000,
+               B00000000, B00000000, B00001111, B00011111, B00000000, B00000000, B00000000, B00000000,
+               B00000000, B00000000, B11111000, B11111100, B00000110, B00000010, B00000001, B00000001
               };
 byte d1[32] = {B00000000, B00000000, B00001111, B11111111, B11111000, B11000000, B11111111, B00111111,
                B00000000, B00000000, B11100000, B11111100, B00111111, B00000011, B11111111, B11111111,
@@ -63,10 +65,12 @@ byte d2[32] = {B00000000, B00000000, B00000000, B00000000, B01111111, B11111111,
               };
 
 // Default face L:
-byte d3[32] = {B00111111, B11111111, B11000000, B11000000, B11110000, B00111100, B00001111, B00000011,
+byte d3[48] = {B00111111, B11111111, B11000000, B11000000, B11110000, B00111100, B00001111, B00000011,
                B11111111, B11111111, B00000011, B00000111, B00011100, B01111000, B11100000, B10000000,
                B11111111, B11111111, B11110000, B00000000, B00000000, B00000000, B00000000, B00000000,
-               B11110000, B11111110, B00000000, B00000000, B00000000, B00000000, B00000000, B00000000
+               B11110000, B11111110, B00000000, B00000000, B00000000, B00000000, B00000000, B00000000,
+               B00000000, B00000000, B00000000, B00000000, B00011111, B00001111, B00000000, B00000000,
+               B00000001, B00000001, B00000010, B00000110, B11111100, B11111000, B00000000, B00000000
               };
 byte d4[32] = {B00111111, B11111111, B11000000, B11111000, B01111111, B00001111, B00000000, B00000000,
                B11111111, B11111111, B00000011, B00111111, B11111100, B11100000, B00000000, B00000000,
@@ -133,7 +137,7 @@ byte a1[32] = {B00111111, B11111111, B11000000, B11111111, B11111111, B00000000,
 //              };
 
 void setup() {
-  for(int i = 0; i <= 7; i++) {
+  for(int i = 0; i < 6; i++) {
     lc.shutdown(i,false);
     lc1.shutdown(i,false);
     lc.setIntensity(i,8);
@@ -181,6 +185,12 @@ void defaultAnimation() {
   for (int i = 0; i <= 7; i++) {
     lc.setRow(3, i, dd[(i + 24)]);
   }
+  for (int i = 0; i <= 7; i++) {
+    lc.setRow(4, i, dd[(i + 32)]);
+  }
+  for (int i = 0; i <= 7; i++) {
+    lc.setRow(5, i, dd[(i + 40)]);
+  }
   //Default face left side
   for (int i = 0; i <= 7; i++) {
     lc1.setRow(0, i, d3[i]);
@@ -193,6 +203,12 @@ void defaultAnimation() {
   }
   for (int i = 0; i <= 7; i++) {
     lc1.setRow(3, i, d3[(i + 24)]);
+  }
+  for (int i = 0; i <= 7; i++) {
+    lc1.setRow(4, i, d3[(i + 32)]);
+  }
+  for (int i = 0; i <= 7; i++) {
+    lc1.setRow(5, i, d3[(i + 40)]);
   }
 }
 
@@ -356,10 +372,10 @@ void angryFace() {
 //}
 
 void clearAll() {
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 6; i++) {
     lc.clearDisplay(i);
   }
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 6; i++) {
     lc1.clearDisplay(i);
   }
 }
