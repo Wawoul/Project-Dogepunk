@@ -7,7 +7,7 @@
   Ardunio will animate a default face and switch emotions when buttons are pressed
   Displaying on 3x 32x8 MAX7219 Matrix Module 4-in-1 Display.
 
-  WORK IN PROGRESS - REV 9 15/11/2018
+  WORK IN PROGRESS - REV 11 05/01/2019
   ---------------------------------------------------------------------------
 */
 
@@ -18,14 +18,14 @@ const int resetButtonPin = 6; //Reset emotes
 const int hButtonPin = 5; //Heart Face
 const int dButtonPin = 4; //Dead Face
 const int aButtonPin = 2; //Angry Face
-//const int sButtonPin = 2; //Sad face
+const int gButtonPin = 19; //Glitch
 
 int pwButtonState; // variable for reading the pushbutton status
 int resetButtonState;
 int hButtonState;
 int dButtonState;
 int aButtonState;
-//int sButtonState;
+int gButtonState;
 int pwFlag = 0; //flag when power button is activated
 int emoteFlag = 0; //flag when emotion button is activated
 
@@ -114,15 +114,15 @@ byte xx[48] = {B00011000, B00011100, B00001100, B11000011, B11000011, B11001100,
                B01100000, B11100000, B11000000, B00000000, B00000000, B11000011, B11101111, B01101111,
                B00000000, B00000000, B00000000, B00000000, B00000000, B11110000, B11111111, B11111111,
                B00000000, B00000000, B00000000, B00000000, B00000000, B00000000, B11111110, B11110000,
-               B00000000, B00000000, B00000000, B00000000, B00000000, B00000000, B00000000, B00000000,
-               B00000000, B00000000, B00000000, B00000000, B00000000, B00000101, B00000010, B00000101
+               B00000000, B00000000, B00001011, B00000100, B00001011, B00000000, B00000000, B00000000,
+               B00000000, B00000000, B01101000, B10010000, B01101000, B00000101, B00000010, B00000101
               };
 byte x1[48] = {B00011000, B11011100, B11001100, B11000011, B11000011, B00001100, B00011100, B00011000,
                B01101111, B11101111, B11000011, B00000000, B00000000, B11000000, B11100000, B01100000,
                B11111111, B11111111, B11110000, B00000000, B00000000, B00000000, B00000000, B00000000,
                B11110000, B11111110, B00000000, B00000000, B00000000, B00000000, B00000000, B00000000,
-               B00000000, B00000000, B00000000, B00000000, B00000000, B00000000, B00000000, B00000000,
-               B00000101, B00000010, B00000101, B00000000, B00000000, B00000000, B00000000, B00000000
+               B00000000, B00000000, B00000000, B00001011, B00000100, B00001011, B00000000, B00000000,
+               B00000101, B00000010, B00000101, B01101000, B10010000, B01101000, B00000000, B00000000
               };
 
 //Angry face
@@ -136,17 +136,17 @@ byte aa[48] = {B00000000, B00000000, B00000000, B11111111, B11111111, B11000000,
 byte a1[48] = {B00111111, B11111111, B11000000, B11111111, B11111111, B00000000, B00000000, B00000000,
                B11111111, B11111111, B00000011, B11111100, B11110000, B00000000, B00000000, B00000000,
                B11111111, B11111111, B11110000, B00000000, B00000000, B00000000, B00000000, B00000000,
-               B11111000, B11111110, B00000000, B00000000, B00000000, B00000000, B00000000, B00000000,
+               B11110000, B11111110, B00000000, B00000000, B00000000, B00000000, B00000000, B00000000,
                B00000000, B00000000, B00011111, B00001111, B00000000, B00000000, B00000000, B00000000,
                B00000001, B00000011, B11111110, B11111100, B00000000, B00000000, B00000000, B00000000
               };
 
-////Sad face
-//byte f4[32] = {B00000011, B00001111, B00111100, B11110000, B11000000, B11001000, B11111111, B00111111,
-//               B10000000, B11100000, B01111000, B00011100, B00111111, B00000011, B11111111, B11111111,
-//               B00000000, B00111100, B00000000, B00111100, B00000000, B11110000, B11100111, B11111111,
-//               B00000000, B00111000, B00110000, B00000000, B00111000, B00000000, B11111110, B11110000
-//              };
+//Glitch
+byte gg[32] = {B00000011, B00001111, B00111100, B11110000, B11000000, B11001000, B11111111, B00111111,
+               B10000000, B11100000, B01111000, B00011100, B00111111, B00000011, B11111111, B11111111,
+               B00000000, B00111100, B00000000, B00111100, B00000000, B11110000, B11100111, B11111111,
+               B00000000, B00111000, B00110000, B00000000, B00111000, B00000000, B11111110, B11110000
+             };
 
 void setup() {
   for(int i = 0; i < 6; i++) {
@@ -164,7 +164,7 @@ void setup() {
   pinMode(hButtonPin, INPUT);
   pinMode(dButtonPin, INPUT);
   pinMode(aButtonPin, INPUT);
-//  pinMode(sButtonPin, INPUT);
+  pinMode(gButtonPin, INPUT);
 }
 
 void powerAnimation() {
@@ -404,20 +404,20 @@ void angryFace() {
   }
 }
 
-//void sadFace() {
-//  for (int i = 0; i <= 7; i++) {
-//    lc.setRow(0, i, f4[i]);
-//  }
-//  for (int i = 0; i <= 7; i++) {
-//    lc.setRow(1, i, f4[(i + 8)]);
-//  }
-//  for (int i = 0; i <= 7; i++) {
-//    lc.setRow(2, i, f4[(i + 16)]);
-//  }
-//  for (int i = 0; i <= 7; i++) {
-//    lc.setRow(3, i, f4[(i + 24)]);
-//  }
-//}
+void glitch() {
+  for (int i = 0; i <= 7; i++) {
+    lc.setRow(0, i, gg[i]);
+  }
+  for (int i = 0; i <= 7; i++) {
+    lc.setRow(1, i, gg[(i + 8)]);
+  }
+  for (int i = 0; i <= 7; i++) {
+    lc.setRow(2, i, gg[(i + 16)]);
+  }
+  for (int i = 0; i <= 7; i++) {
+    lc.setRow(3, i, gg[(i + 24)]);
+  }
+}
 
 void clearAll() {
   for (int i = 0; i < 6; i++) {
@@ -435,8 +435,8 @@ void readButtons() {
   hButtonState = digitalRead(hButtonPin);
   dButtonState = digitalRead(dButtonPin);
   aButtonState = digitalRead(aButtonPin);
-//  sButtonState = digitalRead(sButtonPin);
-  if(pwButtonState == HIGH || hButtonState == HIGH || dButtonState == HIGH || aButtonState == HIGH){
+  gButtonState = digitalRead(gButtonPin);
+  if(pwButtonState == HIGH || hButtonState == HIGH || dButtonState == HIGH || aButtonState == HIGH || gButtonState == HIGH){
     emoteFlag = 1;
   }
 }
@@ -498,11 +498,11 @@ void loop() {
       delay(250); //small delay to account for button bounce.
     }
 
-//    // If sad button is HIGH:
-//    if (sButtonState == HIGH) {
-//      sadFace();
-//      sButtonState == LOW;
-//      delay(250); //small delay to account for button bounce.
-//    }
+    // If Glitch button is HIGH:
+    if (gButtonState == HIGH) {
+      glitch();
+      gButtonState == LOW;
+      delay(250); //small delay to account for button bounce.
+    }
   }
 }
