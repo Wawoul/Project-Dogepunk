@@ -7,7 +7,7 @@
   Ardunio will animate a default face and switch emotions when buttons are pressed
   Displaying on 3x 32x8 MAX7219 Matrix Module 4-in-1 Display.
 
-  WORK IN PROGRESS - REV 2.1 21/04/2019
+  WORK IN PROGRESS - REV 2.2 21/04/2019
   ---------------------------------------------------------------------------
 */
 
@@ -484,21 +484,18 @@ void loop() {
         heartFlag = 0;
         delay(250); //small delay to account for button bounce.
       }
-  
       // If dead button is HIGH:
       if (deadFlag == 1) {
         deadFace();
         deadFlag = 0;
         delay(250); //small delay to account for button bounce.
       }
-  
       // If angry button is HIGH:
       if (angryFlag == 1) {
         angryFace();
         angryFlag = 0;
         delay(250); //small delay to account for button bounce.
       }
-  
 //      // If Glitch button is HIGH:
 //      if (gButtonState == HIGH) {
 //        glitch();
