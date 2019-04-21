@@ -27,8 +27,10 @@ int aButtonState;
 int gButtonState;
 int resetFlag = 0; //flag when reset button is activated
 int emoteFlag = 0; //flag when emotion button is activated
+int heartFlag = 0; //flag when heart button is activated
+int deadFlag = 0; //flag when dead button is activated
+int angryFlag = 0; //flag when angry button is activated
 int glitchFlag = 0; //flag when glitch button is activated
-int heartFlag = 0; //flag when glitch button is activated
 int pwAni = 0;
 
 LedControl lc = LedControl(12, 11, 10, 6); //right side of face
@@ -440,11 +442,17 @@ void check() {
   if(resetButtonState == HIGH){
     resetFlag = 1;
   }
+  if(hButtonState == HIGH || dButtonState == HIGH || aButtonState == HIGH){
+    emoteFlag = 1;
+  }
   if(hButtonState == HIGH){
     heartFlag = 1;
   }
-  if(hButtonState == HIGH || dButtonState == HIGH || aButtonState == HIGH){
-    emoteFlag = 1;
+  if(dButtonState == HIGH){
+    deadFlag = 1;
+  }
+  if(aButtonState == HIGH){
+    angryFlag = 1;
   }
   if(gButtonState == HIGH){
     glitchFlag = 1;
@@ -458,13 +466,14 @@ void loop() {
     }
    
     if (emoteFlag == 0) {
-        for (int l = 0; l <= 30 && emoteFlag == 0 && resetFlag == 0; l++) {
+        for (int l = 0; l <= 20 && emoteFlag == 0 && resetFlag == 0; l++) {
         defaultAnimation();
-        delay(50);
+        delay(25);
         check();
       }
         defaultAnimation1();
         defaultAnimation2();
+        check();
     }
     check();
     if (emoteFlag == 1) {
@@ -477,16 +486,16 @@ void loop() {
       }
   
       // If dead button is HIGH:
-      if (dButtonState == HIGH) {
+      if (deadFlag == 1) {
         deadFace();
-        dButtonState == LOW;
+        deadFlag = 0;
         delay(250); //small delay to account for button bounce.
       }
   
       // If angry button is HIGH:
-      if (aButtonState == HIGH) {
+      if (angryFlag == 1) {
         angryFace();
-        aButtonState == LOW;
+        angryFlag = 0;
         delay(250); //small delay to account for button bounce.
       }
   
@@ -497,17 +506,17 @@ void loop() {
 //        delay(250); //small delay to account for button bounce.
 //      }
       if (resetFlag == 1) {
-      clearAll();
-      emoteFlag = 0;
-      resetFlag = 0;
-      delay(250); //small delay to account for button bounce.
-  }
+        clearAll();
+        emoteFlag = 0;
+        resetFlag = 0;
+        delay(250); //small delay to account for button bounce.
+      }
     }
-//        // If reset button is HIGH:
-//    if (resetButtonState == HIGH) {
-//      clearAll();resetFlag == 0;resetFlag == 0;
-//      emoteFlag = 0;
-//      resetFlag == 0;
-//      delay(250); //small delay to account for button bounce.
-//  }
+      // If reset button is HIGH:
+      if (resetFlag == 1) {
+        clearAll();
+        emoteFlag = 0;
+        resetFlag = 0;
+        delay(250); //small delay to account for button bounce.
+  }
 }
