@@ -7,29 +7,27 @@
   Ardunio will animate a default face and switch emotions when buttons are pressed
   Displaying on 3x 32x8 MAX7219 Matrix Module 4-in-1 Display.
 
-  WORK IN PROGRESS - REV 2.1 21/04/2019
+  WORK IN PROGRESS - REV 11 05/01/2019
   ---------------------------------------------------------------------------
 */
 
 #include "LedControl.h"
 #include "binary.h"
-const int resetButtonPin = 7; //Reset emotes
-const int hButtonPin = 6; //Heart Face
-const int dButtonPin = 5; //Dead Face
-const int aButtonPin = 4; //Angry Face
-const int gButtonPin = 2; //Glitch
+const int pwButtonPin = 7; //Switch all on or off
+const int resetButtonPin = 6; //Reset emotes
+const int hButtonPin = 5; //Heart Face
+const int dButtonPin = 4; //Dead Face
+const int aButtonPin = 2; //Angry Face
+const int gButtonPin = 19; //Glitch
 
-// variable for reading the pushbutton status
+int pwButtonState; // variable for reading the pushbutton status
 int resetButtonState;
 int hButtonState;
 int dButtonState;
 int aButtonState;
 int gButtonState;
-int resetFlag = 0; //flag when reset button is activated
+int pwFlag = 0; //flag when power button is activated
 int emoteFlag = 0; //flag when emotion button is activated
-int glitchFlag = 0; //flag when glitch button is activated
-int heartFlag = 0; //flag when glitch button is activated
-int pwAni = 0;
 
 LedControl lc = LedControl(12, 11, 10, 6); //right side of face
 LedControl lc1 = LedControl(8, 9, 3, 6); //left side of face
@@ -161,6 +159,7 @@ void setup() {
   }
   
   // initialize the pushbutton pin as an input:
+  pinMode(pwButtonPin, INPUT);
   pinMode(resetButtonPin, INPUT);
   pinMode(hButtonPin, INPUT);
   pinMode(dButtonPin, INPUT);
@@ -429,85 +428,81 @@ void clearAll() {
   }
 }
 
-
-void check() {
+void readButtons() {
   // read the state of the pushbutton value:
+  pwButtonState = digitalRead(pwButtonPin);
   resetButtonState = digitalRead(resetButtonPin);
   hButtonState = digitalRead(hButtonPin);
   dButtonState = digitalRead(dButtonPin);
   aButtonState = digitalRead(aButtonPin);
   gButtonState = digitalRead(gButtonPin);
-  if(resetButtonState == HIGH){
-    resetFlag = 1;
-  }
-  if(hButtonState == HIGH){
-    heartFlag = 1;
-  }
-  if(hButtonState == HIGH || dButtonState == HIGH || aButtonState == HIGH){
+  if(pwButtonState == HIGH || hButtonState == HIGH || dButtonState == HIGH || aButtonState == HIGH || gButtonState == HIGH){
     emoteFlag = 1;
-  }
-  if(gButtonState == HIGH){
-    glitchFlag = 1;
   }
 }
 
 void loop() {
-    if (pwAni == 0) {
+  readButtons();
+
+  // If Power button is HIGH:
+  if (pwButtonState == HIGH && pwFlag == 0) {
     powerAnimation();
-    pwAni = 1;
-    }
-   
+    emoteFlag = 0;
+    pwFlag = 1;
+    pwButtonState == LOW;
+    delay(250);
+  } else if (pwButtonState == HIGH && pwFlag == 1) {
+    clearAll();
+    pwFlag = 0;
+    pwButtonState == LOW;
+    delay(250);
+  }
+
+  //If pw button is on
+  if (pwFlag == 1) {
+
     if (emoteFlag == 0) {
-        for (int l = 0; l <= 30 && emoteFlag == 0 && resetFlag == 0; l++) {
+      for (int l = 0; l <= 30 && emoteFlag == 0; l++) {
         defaultAnimation();
         delay(50);
-        check();
+        readButtons();
       }
-        defaultAnimation1();
-        defaultAnimation2();
+     defaultAnimation1();
+     defaultAnimation2();
     }
-    check();
-    if (emoteFlag == 1) {
-      check();
-      // If heart button is HIGH:
-      if (heartFlag == 1) {
-        heartFace();
-        heartFlag = 0;
-        delay(250); //small delay to account for button bounce.
-      }
-  
-      // If dead button is HIGH:
-      if (dButtonState == HIGH) {
-        deadFace();
-        dButtonState == LOW;
-        delay(250); //small delay to account for button bounce.
-      }
-  
-      // If angry button is HIGH:
-      if (aButtonState == HIGH) {
-        angryFace();
-        aButtonState == LOW;
-        delay(250); //small delay to account for button bounce.
-      }
-  
-//      // If Glitch button is HIGH:
-//      if (gButtonState == HIGH) {
-//        glitch();
-//        gButtonState == LOW;
-//        delay(250); //small delay to account for button bounce.
-//      }
-      if (resetFlag == 1) {
-      clearAll();
+
+    // If reset button is HIGH:
+    if (resetButtonState == HIGH) {
       emoteFlag = 0;
-      resetFlag = 0;
       delay(250); //small delay to account for button bounce.
-  }
     }
-//        // If reset button is HIGH:
-//    if (resetButtonState == HIGH) {
-//      clearAll();resetFlag == 0;resetFlag == 0;
-//      emoteFlag = 0;
-//      resetFlag == 0;
-//      delay(250); //small delay to account for button bounce.
-//  }
+
+    // If heart button is HIGH:
+    if (hButtonState == HIGH) {
+      heartFace();
+      hButtonState == LOW;
+      delay(250); //small delay to account for button bounce.
+    }
+
+    // If dead button is HIGH:
+    if (dButtonState == HIGH) {
+      deadFace();
+      dButtonState == LOW;
+      delay(250); //small delay to account for button bounce.
+    }
+
+    // If angry button is HIGH:
+    if (aButtonState == HIGH) {
+      angryFace();
+      aButtonState == LOW;
+      delay(250); //small delay to account for button bounce.
+    }
+
+    // If Glitch button is HIGH:
+    if (gButtonState == HIGH) {
+      glitch();
+      gButtonState == LOW;
+      delay(250); //small delay to account for button bounce.
+    }
+  }
 }
