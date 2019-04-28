@@ -17,7 +17,8 @@ const int resetButtonPin = 7; //Reset emotes
 const int hButtonPin = 6; //Heart Face
 const int dButtonPin = 5; //Dead Face
 const int aButtonPin = 4; //Angry Face
-const int gButtonPin = 2; //Glitch
+const int relayPin = 2; //Relay
+const int gButtonPin = A5; //Glitch
 
 // variable for reading the pushbutton status
 int resetButtonState;
@@ -216,6 +217,7 @@ void setup() {
   pinMode(hButtonPin, INPUT);
   pinMode(dButtonPin, INPUT);
   pinMode(aButtonPin, INPUT);
+  pinMode(relayPin, OUTPUT);
   pinMode(gButtonPin, INPUT);
 }
 
@@ -672,6 +674,7 @@ void loop() {
     delay(100);
     defaultAnimation1();
     delay(100);
+    digitalWrite(relayPin, HIGH);
     pwAni = 1;
     }
    
