@@ -7,18 +7,23 @@
   Ardunio will animate a default face and switch emotions when buttons are pressed
   Displaying on 3x 32x8 MAX7219 Matrix Module 4-in-1 Display.
 
-  WORK IN PROGRESS - REV 2.4 31/05/2019
+  WORK IN PROGRESS - REV 2.4.1 31/05/2019
   ---------------------------------------------------------------------------
 */
 
 #include "LedControl.h"
 #include "binary.h"
+#include <Adafruit_NeoPixel.h>
+
+#define PIN 6
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(0, PIN, NEO_GRB + NEO_KHZ800);
+
 const int resetButtonPin = 7; //Reset emotes
-const int hButtonPin = 6; //Heart Face
-const int dButtonPin = 5; //Dead Face
-const int aButtonPin = 4; //Angry Face
+const int hButtonPin = A1; //Heart Face
+const int dButtonPin = A2; //Dead Face
+const int aButtonPin = A3; //Angry Face
 const int relayPin = 2; //Relay
-const int gButtonPin = A5; //Glitch
+const int gButtonPin = A4; //Glitch
 
 // variable for reading the pushbutton status
 int resetButtonState;
@@ -249,6 +254,9 @@ byte gg[32] = {B00000011, B00001111, B00111100, B11110000, B11000000, B11001000,
              };
 
 void setup() {
+  strip.begin();
+  strip.show();
+  
   for(int i = 0; i < 6; i++) {
     lc.shutdown(i,false);
     lc1.shutdown(i,false);
@@ -818,6 +826,8 @@ void check() {
 
 void loop() {
     if (pwAni == 0) {
+      strip.setPixelColor(1, 164, 49, 255, 127);
+      strip.show();
     powerAnimationP1();
     delay(500);
     clearAll();
