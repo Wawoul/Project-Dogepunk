@@ -7,7 +7,7 @@
   Ardunio will animate a default face and switch emotions when buttons are pressed
   Displaying on 3x 32x8 MAX7219 Matrix Module 4-in-1 Display.
 
-  WORK IN PROGRESS - REV 2.4.1 31/05/2019
+  WORK IN PROGRESS - REV 2.4.2 20/06/2019
   ---------------------------------------------------------------------------
 */
 
@@ -256,6 +256,7 @@ byte gg[32] = {B00000011, B00001111, B00111100, B11110000, B11000000, B11001000,
 void setup() {
   strip.begin();
   strip.show();
+  strip.setBrightness(10);
   
   for(int i = 0; i < 6; i++) {
     lc.shutdown(i,false);
@@ -826,8 +827,6 @@ void check() {
 
 void loop() {
     if (pwAni == 0) {
-      strip.setPixelColor(1, 164, 49, 255, 127);
-      strip.show();
     powerAnimationP1();
     delay(500);
     clearAll();
@@ -869,6 +868,9 @@ void loop() {
     if (emoteFlag == 0) {
         for (int l = 0; l <= 20 && emoteFlag == 0 && resetFlag == 0; l++) {
         defaultAnimation();
+        //strip.setPixelColor(n, red, green, blue, white);
+        strip.setPixelColor(0, 0, 0, 0, 255);
+        strip.show();
         delay(25);
         check();
       }
@@ -884,18 +886,27 @@ void loop() {
       // If heart button is HIGH:
       if (heartFlag == 1) {
         heartFace();
+        //strip.setPixelColor(n, red, green, blue, white);
+        strip.setPixelColor(0, 255, 0, 0, 000);
+        strip.show();
         heartFlag = 0;
         delay(250); //small delay to account for button bounce.
       }
       // If dead button is HIGH:
       if (deadFlag == 1) {
         deadFace();
+        //strip.setPixelColor(n, red, green, blue, white);
+        strip.setPixelColor(0, 0, 255, 0, 000);
+        strip.show();
         deadFlag = 0;
         delay(250); //small delay to account for button bounce.
       }
       // If angry button is HIGH:
       if (angryFlag == 1) {
         angryFace();
+        //strip.setPixelColor(n, red, green, blue, white);
+        strip.setPixelColor(0, 0, 0, 255, 000);
+        strip.show();
         angryFlag = 0;
         delay(250); //small delay to account for button bounce.
       }
@@ -909,6 +920,8 @@ void loop() {
         //clearAll();
         emoteFlag = 0;
         resetFlag = 0;
+        strip.setPixelColor(0, 000, 000, 000, 000);
+        strip.show();
         delay(250); //small delay to account for button bounce.
       }
     }
@@ -917,6 +930,8 @@ void loop() {
         //clearAll();
         emoteFlag = 0;
         resetFlag = 0;
+        strip.setPixelColor(0, 000, 000, 000, 000);
+        strip.show();
         delay(250); //small delay to account for button bounce.
   }
 }
