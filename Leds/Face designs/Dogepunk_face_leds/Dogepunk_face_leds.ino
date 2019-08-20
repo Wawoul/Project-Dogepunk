@@ -7,7 +7,7 @@
   Ardunio will animate a default face and switch emotions when buttons are pressed
   Displaying on 3x 32x8 MAX7219 Matrix Module 4-in-1 Display.
 
-  WORK IN PROGRESS - REV 2.4.2 20/06/2019
+  WORK IN PROGRESS - REV 2.5.0 20/07/2019
   ---------------------------------------------------------------------------
 */
 
@@ -16,7 +16,8 @@
 #include <Adafruit_NeoPixel.h>
 
 #define PIN 6
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(0, PIN, NEO_GRB + NEO_KHZ800);
+#define N_LEDS 1
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(N_LEDS, PIN, NEO_GRB + NEO_KHZ800);
 
 const int resetButtonPin = 7; //Reset emotes
 const int hButtonPin = A1; //Heart Face
@@ -39,8 +40,8 @@ int angryFlag = 0; //flag when angry button is activated
 int glitchFlag = 0; //flag when glitch button is activated
 int pwAni = 0;
 
-LedControl lc1 = LedControl(12, 11, 10, 6); //right side of face
-LedControl lc = LedControl(8, 9, 3, 6); //left side of face
+LedControl lc = LedControl(12, 11, 10, 6); //right side of face
+LedControl lc1 = LedControl(8, 9, 3, 6); //left side of face
 //DOUT connects to pin 12
 //CLK connects to pin 11
 //CS connects to pin 10
@@ -255,8 +256,7 @@ byte gg[32] = {B00000011, B00001111, B00111100, B11110000, B11000000, B11001000,
 
 void setup() {
   strip.begin();
-  strip.show();
-  strip.setBrightness(10);
+  strip.setBrightness(15);
   
   for(int i = 0; i < 6; i++) {
     lc.shutdown(i,false);
